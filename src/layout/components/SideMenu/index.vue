@@ -1,3 +1,10 @@
+<!--
+ * @Description: 侧边菜单导航
+ * @Author: xiawenlong
+ * @Date: 2020-12-17 22:18:46
+ * @LastEditors: xiawenlong
+ * @LastEditTime: 2020-12-21 09:52:22
+-->
 <template>
   <div class="menu">
     <el-scrollbar>
@@ -16,7 +23,7 @@
           <side-menu-item
             v-if="item.type === menuType"
             :item="item"
-            :basePath="item.path"
+            :base-path="item.path"
           ></side-menu-item>
         </div>
       </el-menu>

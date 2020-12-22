@@ -1,10 +1,15 @@
 $dark-blue: #2b364d;
 $bg-gary: #f0f3f4;
 $text-color: #606266;
-$white: #ffffff;
+$active-color: #409eff;
 
 $menuWidth: 200px;
 %width-height {
   width: 100%;
   height: 100%;
+}
+%one-line-text{
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }

@@ -7,7 +7,6 @@ import * as type from '@/store/action-types'
 import { getCookie } from '@/utils/cookies'
 import { getLocal } from '@/utils/local'
 import 'nprogress/nprogress.css'
-
 Vue.use(VueRouter)
 
 let routes = []
@@ -21,10 +20,15 @@ const router = new VueRouter({
   routes,
 })
 
+NProgress.configure({
+  showSpinner: false,
+})
 router.beforeEach((to, from, next) => {
   document.title = getTitle(to.meta.title)
   NProgress.start()
-  if (to.meta.auth && !getCookie('myToken')) {
+  console.log(getCookie('myToken'))
+  if (to.path === '/login') return next()
+  if (!getCookie('myToken')) {
     next({
       path: '/login',
       query: {
@@ -32,9 +36,16 @@ router.beforeEach((to, from, next) => {
       },
     })
   } else {
+    // 重拿用户信息
     if (JSON.stringify(store.state.user.userInfo) == '{}') {
       const userInfo = getLocal('userInfo', true)
       JSON.stringify(userInfo) !== '{}' && store.commit(`user/${type.SET_USER_INFO}`, userInfo)
+    }
+    // 重拿用户当前选择学院
+    if (JSON.stringify(store.state.user.currentCollege) == '{}') {
+      const currentCollege = getLocal('currentCollege', true)
+      JSON.stringify(currentCollege) !== '{}' &&
+        store.commit(`user/${type.SET_COLLEGE}`, currentCollege)
     }
     next()
   }

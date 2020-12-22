@@ -1,4 +1,9 @@
 const getters = {
+  userInfo: state => state.user.userInfo,
+  token: state => state.user.token,
+  currentCollege: state => state.user.currentCollege,
+  tenantId: state => state.user.currentCollege.tenantId,
+  organizationId: state => state.user.currentCollege.organizationId,
   menuType: state => state.menuType,
   opened: state => {
     if (state.opened === 'false') {

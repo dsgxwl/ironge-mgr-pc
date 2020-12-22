@@ -1,43 +1,27 @@
 <template>
   <div class="login">
-    <!-- <div class="slideShadow" v-show="showSlide">
-      <transition>
-        <div class="slideSty animated bounce">
-          <slide-verify
-            @success="onSuccess"
-            @fail="onFail"
-            :sliderText="text"
-            :w="350"
-            :h="175"
-            ref="slideDiv"
-          ></slide-verify>
-          <div class="iconBtn">
-            <i class="el-icon-circle-close" @click="showSlide = false"></i
-            ><i class="el-icon-refresh" @click="refresh"></i>
-          </div>
-        </div>
-      </transition>
-    </div> -->
     <div class="loginBox">
-      <h2 class="loginH2">中潮教育报表系统</h2>
+      <h2 class="loginH2">融e学运营平台</h2>
       <div class="loginCon">
-        <el-form ref="loginForm" :rules="rules" :model="ruleForm">
-          <el-form-item prop="user">
+        <el-form ref="loginForm" :rules="loginRules" :model="loginForm">
+          <el-form-item prop="account">
             <el-input
+              v-model="loginForm.account"
               placeholder="请输入账号"
               prefix-icon="el-icon-user"
-              v-model="ruleForm.user"
             ></el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input
+              v-model="loginForm.password"
               placeholder="请输入密码"
               prefix-icon="el-icon-lock"
-              v-model="ruleForm.password"
               show-password
             ></el-input>
           </el-form-item>
-          <el-button type="primary" class="loginBtn" @click="loginYz('loginForm')">登录</el-button>
+          <el-button v-loading="loading" type="primary" class="loginBtn" @click="login">
+            登录
+          </el-button>
         </el-form>
       </div>
     </div>
@@ -45,68 +29,43 @@
 </template>
 
 <script>
-// import SlideVerify from '@/components/SlideVerify'
+import * as type from '@/store/action-types'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('user')
 export default {
   data() {
     return {
-      notifyObj: null,
-      text: '向右滑动',
-      showSlide: false,
-      ruleForm: {
-        user: 'admin',
-        password: '123456',
+      loading: false,
+      loginForm: {
+        account: '',
+        password: '',
       },
-      rules: {
-        user: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 15, message: '长度在3到5个字符', trigger: 'blur' },
-        ],
+      loginRules: {
+        account: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
       },
     }
   },
   methods: {
-    onSuccess() {
-      this.showSlide = false
-      this._login()
-    },
-    onFail() {
-      this.$message.error('验证失败')
-    },
-    refresh() {
-      this.$refs.slideDiv.reset()
-    },
-    loginYz(form) {
-      this.$refs[form].validate(valid => {
+    ...mapActions([type.LOGIN]),
+    login() {
+      this.$refs['loginForm'].validate(async valid => {
         if (valid) {
-          this.showSlide = true
+          try {
+            this.loading = true
+            await this[type.LOGIN](this.loginForm)
+            // this.$router.push({ path: '/' })
+            const redirect = this.$route.query.redirect
+            this.$router.push(redirect ? redirect : '/')
+          } catch (error) {
+            this.$message.warning(error.msg)
+          }
         } else {
-          return
+          return false
         }
+        this.loading = false
       })
     },
-    _login() {
-      this.$store
-        .dispatch('user/_login', this.ruleForm)
-        .then(res => {
-          if (!res.data.success) {
-            this.refresh()
-          } else {
-            this.$router.push(this.$route.query.redirect)
-            if (this.notifyObj) {
-              this.notifyObj.close()
-            }
-            this.notifyObj = null
-          }
-        })
-        .catch(error => {
-          this.refresh()
-          this.$message.error(error)
-        })
-    },
-  },
-  components: {
-    // SlideVerify,
   },
 }
 </script>
@@ -169,50 +128,5 @@ export default {
 }
 .loginBtn {
   width: 100%;
-}
-.slideShadow {
-  position: fixed;
-  z-index: 999;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-}
-.slideSty {
-  position: absolute;
-  width: 380px;
-  height: 311px;
-  background: #e8e8e8;
-  border: 1px solid #dcdcdc;
-  left: 50%;
-  top: 50%;
-  margin-left: -188px;
-  margin-top: -176px;
-  z-index: 99;
-  border-radius: 5px;
-}
-.iconBtn {
-  padding: 9px 0 0 19px;
-  color: #5f5f5f;
-  border-top: 1px solid #d8d8d8;
-  margin-top: 17px;
-  i {
-    font-size: 22px;
-    cursor: pointer;
-  }
-  i:last-child {
-    margin-left: 7px;
-  }
-}
-</style>
-<style>
-.slideSty .slide-verify {
-  margin: 13px auto 0 auto;
-  width: 350px !important;
-}
-.slideSty .slide-verify-slider {
-  width: 100% !important;
-}
-.slideSty .slide-verify-refresh-icon {
-  display: none;
 }
 </style>

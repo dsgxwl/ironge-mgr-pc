@@ -1,4 +1,4 @@
-# ironge-pc
+# ironge-mgr-pc
 
 ## Project setup
 ```
@@ -19,6 +19,8 @@ npm run build
 ```
 npm run lint
 ```
+### doc
+```
+npm run doc
+```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

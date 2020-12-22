@@ -1,5 +1,5 @@
 <template>
-  <div class="side-menu-item" v-if="!item.hidden">
+  <div v-if="!item.hidden" class="side-menu-item">
     <template v-if="childItem && (!childItem.children || childItem.noChild)">
       <page-link v-if="childItem.meta" :to="resolvePath(childItem.path)">
         <el-menu-item :index="resolvePath(childItem.path)">
@@ -17,7 +17,7 @@
         v-for="child in item.children"
         :key="child.path"
         :item="child"
-        :basePath="resolvePath(child.path)"
+        :base-path="resolvePath(child.path)"
       ></side-menu-item>
     </el-submenu>
   </div>
@@ -29,6 +29,9 @@ import { isAbsolutePath } from '@/utils/validate'
 import path from 'path'
 export default {
   name: 'SideMenuItem',
+  components: {
+    PageLink,
+  },
   props: {
     item: {
       type: Object,
@@ -75,9 +78,6 @@ export default {
       }
       return path.join(this.basePath, router)
     },
-  },
-  components: {
-    PageLink,
   },
 }
 </script>

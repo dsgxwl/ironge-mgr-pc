@@ -1,8 +1,15 @@
+<!--
+ * @Description: 面包屑
+ * @Author: xiawenlong
+ * @Date: 2020-12-17 22:19:20
+ * @LastEditors: xiawenlong
+ * @LastEditTime: 2020-12-21 09:51:12
+-->
 <template>
   <div class="bread-crumb">
     <el-breadcrumb separator="/">
       <transition-group name="breadcrumb">
-        <el-breadcrumb-item v-for="(item, index) in breadList" :to="item.path" :key="index">{{
+        <el-breadcrumb-item v-for="item in breadList" :key="item.path" :to="item.path">{{
           item.meta.title
         }}</el-breadcrumb-item>
       </transition-group>

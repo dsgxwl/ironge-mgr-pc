@@ -1,3 +1,10 @@
+<!--
+ * @Description: 页面内容部分
+ * @Author: xiawenlong
+ * @Date: 2020-12-17 22:18:46
+ * @LastEditors: xiawenlong
+ * @LastEditTime: 2020-12-21 09:51:51
+-->
 <template>
   <div class="pageMain">
     <transition name="fade-page" mode="out-in">

@@ -1,17 +1,39 @@
+<!--
+ * @Description: 顶部菜单导航
+ * @Author: xiawenlong
+ * @Date: 2020-12-18 09:05:33
+ * @LastEditors: xiawenlong
+ * @LastEditTime: 2020-12-22 10:17:32
+-->
 <template>
-  <div class="top-menu">
-    <el-tabs v-model="activeMenuPath" @tab-click="handleTopMenuClick">
+  <scroll-pane ref="scrollPane" class="top-menu">
+    <router-link
+      v-for="item in topMenuList"
+      ref="menu"
+      :key="item.path"
+      :name="item.path"
+      :class="isActive(item) ? 'active' : ''"
+      :to="item.path"
+      @click.middle.native="handleTopMenuClick"
+    >
+      <span><i :class="item.icon"></i> {{ item.label }}</span>
+    </router-link>
+  </scroll-pane>
+  <!-- <el-tabs v-model="activeMenuPath" @tab-click="handleTopMenuClick">
       <el-tab-pane v-for="item in topMenuList" :key="item.path" :name="item.path">
         <span slot="label"><i :class="item.icon"></i> {{ item.label }}</span>
       </el-tab-pane>
-    </el-tabs>
-  </div>
+    </el-tabs> -->
 </template>
 <script>
 import { mapMutations } from 'vuex'
 import * as type from '@/store/action-types'
+import ScrollPane from '../ScrollPane'
 let menuType = ''
 export default {
+  components: {
+    ScrollPane,
+  },
   data() {
     return {
       topMenuList: [
@@ -79,13 +101,35 @@ export default {
       activeMenuPath: '/',
     }
   },
+  watch: {
+    // 监听路由变化重新设置type
+    $route: function() {
+      this.fetchTopMenuData()
+      this.moveToCurrentMenu()
+    },
+  },
   created() {
     this.fetchTopMenuData()
   },
   methods: {
     ...mapMutations([type.SET_MENU_TYPE]),
+    isActive(route) {
+      return route.path === this.activeMenuPath
+    },
     handleTopMenuClick(tab) {
-      this.$router.push(tab.name)
+      console.log(tab)
+      // this.$router.push(tab.name)
+    },
+    moveToCurrentMenu() {
+      const menus = this.$refs.menu
+      this.$nextTick(() => {
+        for (const menu of menus) {
+          if (menu.to === this.activeMenuPath) {
+            this.$refs.scrollPane.moveToTarget(menu, menus)
+            break
+          }
+        }
+      })
     },
     // 初始化菜单激活项，设置type
     fetchTopMenuData(routes = this.$router.options.routes) {
@@ -116,12 +160,6 @@ export default {
           this.reSetMenuType(currentRouteName, currentMenuType, children[i].children)
         }
       }
-    },
-  },
-  watch: {
-    // 监听路由变化重新设置type
-    $route: function() {
-      this.fetchTopMenuData()
     },
   },
 }

@@ -1,31 +1,59 @@
+/*
+ * @Description: 请求处理
+ * @Author: xiawenlong
+ * @Date: 2020-12-16 19:57:59
+ * @LastEditors: xiawenlong
+ * @LastEditTime: 2020-12-22 11:42:07
+ */
 import axios from 'axios'
+import { codeMsg } from './codeMsg'
 class Http {
   constructor() {
     this.baseURL = process.env.VUE_APP_BASE_API
     this.timeout = 3000
   }
   setInterceptor(instance) {
-    instance.interceptors.request.use(config => {
-      return config
-    })
-    instance.interceptors.response.use(
-      res => {
-        if (res.status === 200) {
-          const code = res.data.code
-          switch (~~code) {
-            case 0:
-              return Promise.resolve(res.data)
-            default:
-              return Promise.reject(res.data)
-          }
-        } else {
-          return Promise.reject(res.data)
-        }
+    instance.interceptors.request.use(
+      config => {
+        // TODO: 获取token
+        const token = 'ironge-user-aac144e29a594bca8154a4bdce548049'
+        config.headers.authorization = token
+        return config
       },
-      err => {
-        return Promise.reject(err)
+      error => {
+        return Promise.reject(error)
       },
     )
+    instance.interceptors.response.use(
+      response => {
+        const { code } = response.data
+        switch (~~code) {
+          case 0:
+            return response.data
+          default:
+            return Promise.reject(response.data)
+        }
+      },
+      error => {
+        const { status = 404 } = error?.response
+        if (Object.prototype.hasOwnProperty.call(codeMsg, status)) {
+          this.errorHandler(error, codeMsg[status])
+        }
+        throw error
+      },
+    )
+  }
+  // 异常处理器
+  errorHandler(error, msg) {
+    if (process.env.NODE_ENV === 'development') {
+      console.group('❌ HTTP Error')
+      console.log('错误信息：' + msg)
+      console.log('接口地址：' + error.response.config.url)
+      console.log(error)
+      console.groupEnd()
+    } else {
+      return Promise.reject(error)
+    }
   }
   mergeOptions(options) {
     return {

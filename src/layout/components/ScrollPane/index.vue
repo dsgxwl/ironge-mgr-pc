@@ -39,15 +39,13 @@ export default {
     emitScroll() {
       this.$emit('scroll')
     },
-    moveToTarget(currentTag) {
+    moveToTarget(currentTag, tagList = this.$parent.$refs.tag) {
       const $container = this.$refs.scrollContainer.$el
       const $containerWidth = $container.offsetWidth
       const $scrollWrapper = this.scrollWrapper
-      const tagList = this.$parent.$refs.tag
 
       let firstTag = null
       let lastTag = null
-
       // find first tag and last tag
       if (tagList.length > 0) {
         firstTag = tagList[0]

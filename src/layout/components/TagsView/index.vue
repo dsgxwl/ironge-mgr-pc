@@ -1,3 +1,10 @@
+<!--
+ * @Description: 多标签
+ * @Author: xiawenlong
+ * @Date: 2020-12-18 15:52:13
+ * @LastEditors: xiawenlong
+ * @LastEditTime: 2020-12-22 09:37:37
+-->
 <template>
   <div id="tags-view-container" class="tags-view-container">
     <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
@@ -13,7 +20,6 @@
         @contextmenu.prevent.native="openMenu(tag, $event)"
       >
         <!-- <i class="el-icon-star-on"></i> -->
-        <i class="el-icon-location"></i>
         {{ tag.title }}
         <span
           v-if="!isAffix(tag)"
@@ -32,8 +38,11 @@
 </template>
 
 <script>
-import ScrollPane from './ScrollPane'
+import ScrollPane from '../ScrollPane'
 import path from 'path'
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers('tagsView')
+import * as type from '@/store/action-types'
 
 export default {
   components: { ScrollPane },
@@ -47,9 +56,7 @@ export default {
     }
   },
   computed: {
-    visitedViews() {
-      return this.$store.state.tagsView.visitedViews
-    },
+    ...mapState(['visitedViews']),
     routes() {
       return this.$router.options.routes
     },
@@ -72,6 +79,15 @@ export default {
     this.addTags()
   },
   methods: {
+    ...mapActions([
+      'ADD_VISITED_VIEW',
+      'ADD_VIEW',
+      'UPDATE_VISITED_VIEW',
+      'DEL_CACHED_VIEW',
+      'DEL_VIEW',
+      'DEL_OTHERS_VIEWS',
+      'DEL_ALL_VIEWS',
+    ]),
     isActive(route) {
       return route.path === this.$route.path
     },
@@ -104,14 +120,16 @@ export default {
       for (const tag of affixTags) {
         // Must have tag name
         if (tag.name) {
-          this.$store.dispatch('tagsView/addVisitedView', tag)
+          // this.$store.dispatch('tagsView/addVisitedView', tag)
+          this[type.ADD_VISITED_VIEW](tag)
         }
       }
     },
     addTags() {
       const { name } = this.$route
       if (name) {
-        this.$store.dispatch('tagsView/addView', this.$route)
+        // this.$store.dispatch('tagsView/addView', this.$route)
+        this[type.ADD_VIEW](this.$route)
       }
       return false
     },
@@ -123,43 +141,48 @@ export default {
             this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
-              this.$store.dispatch('tagsView/updateVisitedView', this.$route)
+              // this.$store.dispatch('tagsView/updateVisitedView', this.$route)
+              this[type.UPDATE_VISITED_VIEW](this.$route)
             }
             break
           }
         }
       })
     },
-    refreshSelectedTag(view) {
-      this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
-        this.$nextTick(() => {
-          this.$router.replace({
-            path: '/redirect' + fullPath,
-          })
+    async refreshSelectedTag(view) {
+      // this.$store.dispatch('tagsView/delCachedView', view).then(() => {
+      await this[type.DEL_CACHED_VIEW](view)
+      const { fullPath } = view
+      this.$nextTick(() => {
+        this.$router.replace({
+          path: '/redirect' + fullPath,
         })
       })
+      // })
     },
-    closeSelectedTag(view) {
-      this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
-        if (this.isActive(view)) {
-          this.toLastView(visitedViews, view)
-        }
-      })
-    },
-    closeOthersTags() {
-      this.$router.push(this.selectedTag)
-      this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
-        this.moveToCurrentTag()
-      })
-    },
-    closeAllTags(view) {
-      this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
-        if (this.affixTags.some(tag => tag.path === view.path)) {
-          return
-        }
+    async closeSelectedTag(view) {
+      const { visitedViews } = await this[type.DEL_VIEW](view)
+      // this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
+      if (this.isActive(view)) {
         this.toLastView(visitedViews, view)
-      })
+      }
+      // })
+    },
+    async closeOthersTags() {
+      this.$router.push(this.selectedTag)
+      await this[type.DEL_OTHERS_VIEWS](this.selectedTag)
+      // this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
+      this.moveToCurrentTag()
+      // })
+    },
+    async closeAllTags(view) {
+      const { visitedViews } = await this[type.DEL_ALL_VIEWS]()
+      // this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
+      if (this.affixTags.some(tag => tag.path === view.path)) {
+        return
+      }
+      this.toLastView(visitedViews, view)
+      // })
     },
     toLastView(visitedViews, view) {
       const latestView = visitedViews.slice(-1)[0]
@@ -178,10 +201,11 @@ export default {
     },
     openMenu(tag, e) {
       const menuMinWidth = 105
-      // const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
+      const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
+      const offsetTop = this.$el.getBoundingClientRect().top // container margin left
       const offsetWidth = this.$el.offsetWidth // container width
       const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = e.clientX // 15: margin right
+      const left = e.clientX - offsetLeft // 15: margin right
 
       if (left > maxLeft) {
         this.left = maxLeft
@@ -189,7 +213,7 @@ export default {
         this.left = left
       }
 
-      this.top = e.clientY
+      this.top = e.clientY - offsetTop
       this.visible = true
       this.selectedTag = tag
     },
@@ -205,29 +229,30 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  position: relative;
+  position: fixed;
+  top: 50px;
   z-index: 200;
   height: 34px;
-  width: 100%;
+  width: calc(100% - 200px);
   background: #fff;
   // border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   .tags-view-wrapper {
     .tags-view-item {
       transition: all 0.3s;
-      // border-radius: 4px;
+      border-radius: 2px;
       display: inline-block;
       position: relative;
       cursor: pointer;
       height: 26px;
       line-height: 26px;
       border: 1px solid #d8dce5;
-      color: #495060;
+      color: #808695;
       background: #fff;
       padding: 0 8px;
       font-size: 12px;
       margin-left: 5px;
-      margin-top: 4px;
+      margin-top: 3px;
       &:first-of-type {
         margin-left: 15px;
       }
