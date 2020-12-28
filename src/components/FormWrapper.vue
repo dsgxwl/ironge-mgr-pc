@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-21 22:01:56
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-21 22:33:24
+ * @LastEditTime: 2020-12-26 16:30:39
 -->
 <template>
   <div class="form-wrapper">
@@ -15,7 +15,18 @@
 </template>
 <style lang="scss" scoped>
 .form-wrapper {
-  // position: relative;
+  padding: 30px 0 80px;
+  ::v-deep .el-form {
+    width: 90%;
+    .tip {
+      color: #909399;
+      font-size: 14px;
+      padding-left: 20px;
+    }
+    .el-input__inner {
+      text-align: left;
+    }
+  }
   .btnBar {
     z-index: 100;
     position: fixed;

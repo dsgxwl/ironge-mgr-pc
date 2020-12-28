@@ -32,6 +32,7 @@
 import * as type from '@/store/action-types'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('user')
+import to from 'await-to'
 export default {
   data() {
     return {
@@ -50,20 +51,13 @@ export default {
     ...mapActions([type.LOGIN]),
     login() {
       this.$refs['loginForm'].validate(async valid => {
-        if (valid) {
-          try {
-            this.loading = true
-            await this[type.LOGIN](this.loginForm)
-            // this.$router.push({ path: '/' })
-            const redirect = this.$route.query.redirect
-            this.$router.push(redirect ? redirect : '/')
-          } catch (error) {
-            this.$message.warning(error.msg)
-          }
-        } else {
-          return false
-        }
+        if (!valid) return false
+        this.loading = true
+        const [, err] = await to(this[type.LOGIN](this.loginForm))
         this.loading = false
+        if (err) return this.$message.warning(err.msg)
+        const redirect = this.$route.query.redirect
+        this.$router.push(redirect ? redirect : '/')
       })
     },
   },

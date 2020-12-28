@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-21 10:13:17
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-22 10:31:08
+ * @LastEditTime: 2020-12-28 20:30:50
 -->
 <template>
   <el-dialog
@@ -48,15 +48,11 @@ import { getAllCollegeList, changeCollege } from '@/api/identify'
 import * as type from '@/store/action-types'
 import { createNamespacedHelpers, mapGetters } from 'vuex'
 const { mapMutations } = createNamespacedHelpers('user')
+import to from 'await-to'
 export default {
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
+      collegeDialogVisible: false,
       collegeData: [],
       pager: {
         total: 0,
@@ -68,30 +64,23 @@ export default {
   },
   computed: {
     ...mapGetters(['currentCollege', 'organizationId']),
-    collegeDialogVisible: {
-      get() {
-        return this.visible
-      },
-      set(val) {
-        this.$emit('updateVisible', val)
-      },
-    },
   },
-  watch: {
-    visible(val) {
-      if (val) {
-        this.pager = { total: 0, current: 1, size: 5 }
-        this.getCollegeData()
-      }
-    },
+  created() {
+    !this.currentCollege.organizationId && this.open()
   },
   methods: {
     ...mapMutations([type.SET_COLLEGE]),
+    open() {
+      this.collegeDialogVisible = true
+      this.pager = { total: 0, current: 1, size: 5 }
+      this.getCollegeData()
+    },
     // 获取所有学院
     async getCollegeData() {
-      const { data } = await getAllCollegeList(this.pager)
-      this.collegeData = data.list
-      this.pager.total = data.total
+      const [res, err] = await to(getAllCollegeList(this.pager))
+      if (err) return this.$message.warning(err.msg)
+      this.collegeData = res.data.list
+      this.pager.total = res.data.total
     },
     // 单击选择学院
     handleCollegeRowClick(row) {
@@ -99,14 +88,11 @@ export default {
     },
     // 确认切换学院
     async confirmChangeCollege() {
-      try {
-        const { organizationId, tenantId } = this.selectedCollege
-        await changeCollege({ organizationId, tenantId })
-        this[type.SET_COLLEGE](this.selectedCollege)
-        window.location.reload()
-      } catch (error) {
-        console.log(error)
-      }
+      const { organizationId, tenantId } = this.selectedCollege
+      const [, err] = await to(changeCollege({ organizationId, tenantId }))
+      if (err) return this.$message.warning(err.msg)
+      this[type.SET_COLLEGE](this.selectedCollege)
+      window.location.reload()
     },
     // 分页
     handleCurrentChange(current) {

@@ -2,7 +2,7 @@
 # 项目介绍
 
 ## 技术栈
-ES6 + Vue + vue-router + vuex + axios + Element UI + sass
+[ES6](http://es6.ruanyifeng.com/) + [Vue](https://cn.vuejs.org/index.html) + [vue-router](https://router.vuejs.org/zh/) + [vuex](https://vuex.vuejs.org/zh/guide/) + [axios](https://github.com/axios/axios) + [Element UI](https://element.eleme.cn/) + [sass](https://www.sass.hk/guide/)
 
 ## 目录结构
 

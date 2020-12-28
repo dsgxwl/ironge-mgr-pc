@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-18 09:05:33
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-22 10:17:32
+ * @LastEditTime: 2020-12-26 16:14:55
 -->
 <template>
   <scroll-pane ref="scrollPane" class="top-menu">
@@ -11,24 +11,21 @@
       v-for="item in topMenuList"
       ref="menu"
       :key="item.path"
+      :type="item.type"
       :name="item.path"
       :class="isActive(item) ? 'active' : ''"
       :to="item.path"
-      @click.middle.native="handleTopMenuClick"
     >
+      <!-- @click.middle.native="handleTopMenuClick" -->
       <span><i :class="item.icon"></i> {{ item.label }}</span>
     </router-link>
   </scroll-pane>
-  <!-- <el-tabs v-model="activeMenuPath" @tab-click="handleTopMenuClick">
-      <el-tab-pane v-for="item in topMenuList" :key="item.path" :name="item.path">
-        <span slot="label"><i :class="item.icon"></i> {{ item.label }}</span>
-      </el-tab-pane>
-    </el-tabs> -->
 </template>
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import * as type from '@/store/action-types'
 import ScrollPane from '../ScrollPane'
+import menu from './menu'
 let menuType = ''
 export default {
   components: {
@@ -36,70 +33,12 @@ export default {
   },
   data() {
     return {
-      topMenuList: [
-        {
-          label: '系统',
-          path: '/',
-          icon: 'el-icon-setting',
-        },
-        {
-          label: '班级',
-          path: '/class',
-          icon: 'el-icon-data-board',
-        },
-        {
-          label: '讲师',
-          path: '/teacher',
-          icon: 'el-icon-s-custom',
-        },
-        {
-          label: '学员',
-          path: '/student',
-          icon: 'el-icon-user',
-        },
-        {
-          label: '订单',
-          path: '/order',
-          icon: 'el-icon-tickets',
-        },
-        {
-          label: '资讯',
-          path: '/info',
-          icon: 'el-icon-news',
-        },
-        {
-          label: '促销',
-          path: '/sale',
-          icon: 'el-icon-shopping-cart-full',
-        },
-        {
-          label: '问答',
-          path: '/qa',
-          icon: 'el-icon-chat-line-square',
-        },
-        {
-          label: '考试',
-          path: '/exam',
-          icon: 'el-icon-edit',
-        },
-        {
-          label: '统计',
-          path: '/statis',
-          icon: 'el-icon-pie-chart',
-        },
-        {
-          label: '审核',
-          path: '/examine',
-          icon: 'el-icon-s-check',
-        },
-        {
-          label: '社区',
-          path: '/community',
-          icon: 'el-icon-office-building',
-        },
-      ],
-      activeMenuPath: '/',
+      topMenuList: menu,
+      activeMenuType: '',
     }
+  },
+  computed: {
+    ...mapState(['menuType']),
   },
   watch: {
     // 监听路由变化重新设置type
@@ -114,17 +53,16 @@ export default {
   methods: {
     ...mapMutations([type.SET_MENU_TYPE]),
     isActive(route) {
-      return route.path === this.activeMenuPath
+      return route.type === this.menuType
     },
-    handleTopMenuClick(tab) {
-      console.log(tab)
-      // this.$router.push(tab.name)
-    },
+    // handleTopMenuClick(tab) {
+    //   console.log(tab)
+    // },
     moveToCurrentMenu() {
       const menus = this.$refs.menu
       this.$nextTick(() => {
         for (const menu of menus) {
-          if (menu.to === this.activeMenuPath) {
+          if (menu.$attrs.type === this.menuType) {
             this.$refs.scrollPane.moveToTarget(menu, menus)
             break
           }
@@ -139,25 +77,25 @@ export default {
         let children = routes[i].children
         if (children) {
           if (menuType) break
-          this.reSetMenuType(currentRouteName, routes[i].type, children)
+          this.reSetMenuType(currentRouteName, routes[i], children)
         }
       }
-      if (menuType == 'system') {
-        this.activeMenuPath = '/'
-      } else {
-        this.activeMenuPath = '/' + menuType
-      }
+      // if (menuType == 'system') {
+      //   this.activeMenuPath = '/'
+      // } else {
+      //   this.activeMenuPath = '/' + menuType
+      // }
       this[type.SET_MENU_TYPE](menuType)
     },
     // 递归获取当前路由的type
-    reSetMenuType(currentRouteName, currentMenuType, children) {
+    reSetMenuType(currentRouteName, parent, children) {
       for (let i = 0; i < children.length; i++) {
         if (children[i].name === currentRouteName) {
-          menuType = currentMenuType
+          menuType = parent.type
           break
         }
         if (children[i].children) {
-          this.reSetMenuType(currentRouteName, currentMenuType, children[i].children)
+          this.reSetMenuType(currentRouteName, parent.type, children[i].children)
         }
       }
     },

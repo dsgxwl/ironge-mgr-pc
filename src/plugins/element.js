@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-16 19:19:46
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-21 16:58:13
+ * @LastEditTime: 2020-12-24 14:18:39
  */
 import Vue from 'vue'
 import {
@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Input,
+  InputNumber,
   Button,
   Form,
   FormItem,
@@ -64,6 +65,7 @@ const components = {
   DropdownMenu,
   DropdownItem,
   Input,
+  InputNumber,
   Button,
   Form,
   FormItem,

@@ -11,7 +11,7 @@ export default [
       {
         path: '/dashbord',
         name: 'Dashbord',
-        component: () => import('@/views/Dashboard'),
+        component: () => import(/*webpackChunkName:'Dashboard'*/ '@/views/dashboard'),
         meta: { title: '首页', icon: 'el-icon-s-data', affix: true },
       },
     ],
@@ -19,7 +19,7 @@ export default [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/Login'),
+    component: () => import(/*webpackChunkName:'Login'*/ '@/views/login'),
     meta: { title: '登录' },
     hidden: true,
   },
@@ -30,7 +30,7 @@ export default [
     children: [
       {
         path: '/redirect/:path*',
-        component: () => import('@/views/Redirect'),
+        component: () => import(/*webpackChunkName:'Redirect'*/ '@/views/redirect'),
       },
     ],
   },
@@ -43,7 +43,7 @@ export default [
       {
         path: '404',
         name: '404',
-        component: () => import(/* webpackChunkName: '404' */ '@/views/Error/404.vue'),
+        component: () => import(/* webpackChunkName: '404' */ '@/views/error/404.vue'),
         hidden: true,
         meta: { title: '404' },
       },

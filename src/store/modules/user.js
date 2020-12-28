@@ -28,14 +28,16 @@ export default {
         commit(type.SET_USER_INFO, result.data)
         return result
       } catch (error) {
-        Message.warning(error.msg)
+        console.log(error)
+        error.msg && Message.warning(error.msg)
       }
     },
     async [type.LOGOUT]() {
       try {
         console.log('退出登录')
       } catch (error) {
-        Message.warning(error.msg)
+        console.log(error)
+        error.msg && Message.warning(error.msg)
       }
     },
   },

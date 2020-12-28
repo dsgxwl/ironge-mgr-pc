@@ -3,10 +3,10 @@
  * @Author: xiawenlong
  * @Date: 2020-12-16 19:57:59
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-22 11:42:07
+ * @LastEditTime: 2020-12-25 14:19:22
  */
 import axios from 'axios'
-import { codeMsg } from './codeMsg'
+import codeMsg from './code-msg'
 class Http {
   constructor() {
     this.baseURL = process.env.VUE_APP_BASE_API

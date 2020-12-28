@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-17 22:19:20
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-21 09:51:12
+ * @LastEditTime: 2020-12-26 15:54:35
 -->
 <template>
   <div class="bread-crumb">
@@ -35,7 +35,7 @@ export default {
             return true
           }
         })
-        if (allList[0].path !== '/' && allList[0].path !== '/dashbord') {
+        if (allList[0]?.path !== '/' && allList[0]?.path !== '/dashbord') {
           allList.unshift({ path: '/', meta: { title: '首页' } })
         }
         this.breadList = allList

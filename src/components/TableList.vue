@@ -3,11 +3,16 @@
  * @Author: xiawenlong
  * @Date: 2020-12-21 19:52:13
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-21 21:57:48
+ * @LastEditTime: 2020-12-28 11:15:15
 -->
 <template>
   <div>
-    <table-search-bar :search-form="searchForm" @search="onSearch"></table-search-bar>
+    <table-search-bar
+      v-if="searchForm.length"
+      :search-form="searchForm"
+      :btns="btns"
+      @search="onSearch"
+    ></table-search-bar>
     <div class="table-list">
       <!-- @selection-change="handleSelectionChange" -->
       <el-table
@@ -17,6 +22,7 @@
         :data="data"
         tooltip-effect="dark"
         style="width: 100%"
+        v-bind="options"
       >
         <!-- <el-table-column type="selection" align="center"></el-table-column> -->
         <el-table-column
@@ -24,16 +30,25 @@
           :key="col.prop"
           :prop="col.prop"
           :label="col.label"
+          :width="col.width"
         >
           <template slot-scope="scope">
             <template>
               <template v-if="!col.render">
-                <span
-                  :style="col.click ? 'color: #409EFF; cursor: pointer;' : null"
-                  @click="col.click && col.click(scope.row, scope.$index)"
-                >
-                  {{ scope.row[col.prop] || col.content }}
-                </span>
+                <template v-if="col.formatter">
+                  <span
+                    @click="col.click && col.click(scope.row, scope.$index)"
+                    v-text="col.formatter(scope.row, col, scope.$index)"
+                  ></span>
+                </template>
+                <template v-else>
+                  <span
+                    :style="col.click ? 'color: #409EFF; cursor: pointer;' : null"
+                    @click="col.click && col.click(scope.row, scope.$index)"
+                  >
+                    {{ scope.row[col.prop] || col.content }}
+                  </span>
+                </template>
               </template>
               <template v-else>
                 <render :column="col" :row="scope.row" :render="col.render" :index="index"></render>
@@ -46,10 +61,14 @@
           <template slot-scope="scope">
             <div class="operate-group">
               <template v-for="(btn, key) in operates">
-                <span :key="key">
+                <span
+                  v-if="!btn.isShow || (btn.isShow && btn.isShow(scope.row, scope.$index))"
+                  :key="key"
+                >
                   <el-button
                     size="mini"
                     :type="btn.type || 'primary'"
+                    :disabled="btn.disabled && btn.disabled(scope.row, scope.$index)"
                     @click.native.prevent="btn.method(scope.row, scope.$index)"
                   >
                     {{ btn.label }}
@@ -61,6 +80,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        v-if="pager"
         background
         :current-page="pager.current"
         :page-sizes="[10, 20, 30, 40]"
@@ -79,6 +99,7 @@ import TableSearchBar from './TableSearchBar'
 export default {
   name: 'TableList',
   components: {
+    TableSearchBar,
     render: {
       functional: true,
       props: {
@@ -99,10 +120,13 @@ export default {
         return opt.props.render(h, params)
       },
     },
-    TableSearchBar,
   },
   props: {
     searchForm: {
+      type: Array,
+      default: () => [],
+    },
+    btns: {
       type: Array,
       default: () => [],
     },
@@ -123,6 +147,10 @@ export default {
       default: () => [],
     },
     pager: {
+      type: Object,
+      default: () => {},
+    },
+    options: {
       type: Object,
       default: () => {},
     },

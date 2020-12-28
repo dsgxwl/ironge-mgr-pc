@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-18 15:52:13
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-22 09:37:37
+ * @LastEditTime: 2020-12-26 16:37:32
 -->
 <template>
   <div id="tags-view-container" class="tags-view-container">
@@ -120,7 +120,6 @@ export default {
       for (const tag of affixTags) {
         // Must have tag name
         if (tag.name) {
-          // this.$store.dispatch('tagsView/addVisitedView', tag)
           this[type.ADD_VISITED_VIEW](tag)
         }
       }
@@ -128,7 +127,6 @@ export default {
     addTags() {
       const { name } = this.$route
       if (name) {
-        // this.$store.dispatch('tagsView/addView', this.$route)
         this[type.ADD_VIEW](this.$route)
       }
       return false
@@ -141,7 +139,6 @@ export default {
             this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
-              // this.$store.dispatch('tagsView/updateVisitedView', this.$route)
               this[type.UPDATE_VISITED_VIEW](this.$route)
             }
             break
@@ -150,7 +147,6 @@ export default {
       })
     },
     async refreshSelectedTag(view) {
-      // this.$store.dispatch('tagsView/delCachedView', view).then(() => {
       await this[type.DEL_CACHED_VIEW](view)
       const { fullPath } = view
       this.$nextTick(() => {
@@ -158,31 +154,24 @@ export default {
           path: '/redirect' + fullPath,
         })
       })
-      // })
     },
     async closeSelectedTag(view) {
       const { visitedViews } = await this[type.DEL_VIEW](view)
-      // this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
       if (this.isActive(view)) {
         this.toLastView(visitedViews, view)
       }
-      // })
     },
     async closeOthersTags() {
       this.$router.push(this.selectedTag)
       await this[type.DEL_OTHERS_VIEWS](this.selectedTag)
-      // this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
       this.moveToCurrentTag()
-      // })
     },
     async closeAllTags(view) {
       const { visitedViews } = await this[type.DEL_ALL_VIEWS]()
-      // this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
       if (this.affixTags.some(tag => tag.path === view.path)) {
         return
       }
       this.toLastView(visitedViews, view)
-      // })
     },
     toLastView(visitedViews, view) {
       const latestView = visitedViews.slice(-1)[0]
@@ -235,11 +224,9 @@ export default {
   height: 34px;
   width: calc(100% - 200px);
   background: #fff;
-  // border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   .tags-view-wrapper {
     .tags-view-item {
-      transition: all 0.3s;
       border-radius: 2px;
       display: inline-block;
       position: relative;
@@ -269,17 +256,6 @@ export default {
         i {
           display: inline-block;
         }
-        // &::before {
-        //   content: '';
-        //   background: #fff;
-        //   display: inline-block;
-        //   width: 8px;
-        //   height: 8px;
-        //   border-radius: 50%;
-        //   position: relative;
-        //   margin-right: 2px;
-        //   opacity: 0.9;
-        // }
       }
     }
   }

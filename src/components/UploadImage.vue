@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-19 14:23:46
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-21 18:08:34
+ * @LastEditTime: 2020-12-28 20:01:46
 -->
 <template>
   <div class="upload-image">
@@ -16,7 +16,7 @@
       :http-request="uploadRequest"
       accept=".jpg,.jpeg,.png,.gif,.svg,.JPG,.JPEG"
     >
-      <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+      <img v-if="image" :src="image" class="avatar" />
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
     </el-upload>
@@ -24,6 +24,7 @@
 </template>
 <script>
 import { upload } from '@/api/oss'
+import to from 'await-to'
 export default {
   name: 'UploadImage',
   model: {
@@ -38,12 +39,12 @@ export default {
   },
   data() {
     return {
-      imageUrl: '',
+      image: '',
     }
   },
   watch: {
     value(val) {
-      this.imageUrl = val
+      this.image = val
     },
   },
   methods: {
@@ -52,13 +53,10 @@ export default {
       params.append('fileTypeCode', 'F001')
       params.append('file', file.file)
       params.append('fileName', file.file.name)
-      try {
-        const { data } = await upload(params)
-        this.imageUrl = data.fileUrl
-        this.$emit('setModelVal', data.fileUrl)
-      } catch (error) {
-        this.$message.warning(error.msg)
-      }
+      const [res, err] = await to(upload(params))
+      if (err) return this.$message.warning(err.msg)
+      this.image = res.data
+      this.$emit('setModelVal', res.data)
     },
   },
 }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NProgress from 'nprogress'
-import getTitle from '@/utils/getTitle'
+import getTitle from '@/utils/get-title'
 import store from '@/store'
 import * as type from '@/store/action-types'
 import { getCookie } from '@/utils/cookies'
@@ -26,7 +26,6 @@ NProgress.configure({
 router.beforeEach((to, from, next) => {
   document.title = getTitle(to.meta.title)
   NProgress.start()
-  console.log(getCookie('myToken'))
   if (to.path === '/login') return next()
   if (!getCookie('myToken')) {
     next({

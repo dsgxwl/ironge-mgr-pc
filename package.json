@@ -9,7 +9,8 @@
     "build:test": "vue-cli-service build --mode test",
     "build:pro": "vue-cli-service build --mode production",
     "lint": "vue-cli-service lint",
-    "doc": "vuepress dev doc"
+    "doc": "vuepress dev doc",
+    "doc:build": "vuepress build doc"
   },
   "dependencies": {
     "axios": "^0.21.0",
