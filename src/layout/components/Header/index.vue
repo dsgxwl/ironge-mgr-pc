@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-17 22:18:46
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-21 10:59:30
+ * @LastEditTime: 2020-12-29 14:32:54
 -->
 <template>
   <div class="header">
@@ -24,7 +24,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import UserDropdown from '../UserDropdown'
 import FullScreen from '../FullScreen'

@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-18 17:31:10
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-28 20:25:59
+ * @LastEditTime: 2020-12-29 11:43:44
 -->
 <template>
   <div class="class-list">

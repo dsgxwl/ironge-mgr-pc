@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-19 16:03:14
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-28 17:48:24
+ * @LastEditTime: 2020-12-29 16:00:12
 -->
 <template>
   <form-wrapper class="class-course-form">
@@ -79,7 +79,7 @@ export default {
       const courses = courseList.filter(course => selectCourseIds.includes(course.courseId))
       const [, err] = await to(classCourseSave({ organizationId, tenantId, classId, courses }))
       if (err) return this.$message.warning(err.msg)
-      this.$emit('stateChange', { classId: '', activeState: 0 })
+      this.$emit('stateChange', { classId: this.classId || '', activeState: 0 })
       this.$message.success('保存成功')
       this.refreshToView('/class/list')
     },

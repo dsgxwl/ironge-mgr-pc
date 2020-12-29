@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-28 15:29:09
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-28 15:50:38
+ * @LastEditTime: 2020-12-29 17:02:11
  */
 export default {
   // 部门树形结构

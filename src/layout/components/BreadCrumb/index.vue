@@ -3,15 +3,15 @@
  * @Author: xiawenlong
  * @Date: 2020-12-17 22:19:20
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-26 15:54:35
+ * @LastEditTime: 2020-12-29 14:31:50
 -->
 <template>
   <div class="bread-crumb">
     <el-breadcrumb separator="/">
       <transition-group name="breadcrumb">
-        <el-breadcrumb-item v-for="item in breadList" :key="item.path" :to="item.path">{{
-          item.meta.title
-        }}</el-breadcrumb-item>
+        <el-breadcrumb-item v-for="item in breadList" :key="item.path" :to="item.path">
+          {{ item.meta.title }}
+        </el-breadcrumb-item>
       </transition-group>
     </el-breadcrumb>
   </div>

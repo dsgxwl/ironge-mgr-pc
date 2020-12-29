@@ -8,7 +8,6 @@ export const courseDelete = params => axios.post(config.courseDelete, params) //
 
 export const chapterQuery = params => axios.post(config.chapterQuery, params) // 章节管理-章节查询
 export const bindVideo = params => axios.post(config.bindVideo, params) // 章节管理-绑定视频
-
 export const chapterAdd = params => axios.post(config.chapterAdd, params) // 章节管理-新增章节
 export const chapterUpdate = params => axios.post(config.chapterUpdate, params) // 章节管理-编辑章节
 export const chapterDelete = params => axios.post(config.chapterDelete, params) // 章节管理-删除章节

@@ -3,6 +3,7 @@ import { login } from '@/api/login'
 import { Message } from 'element-ui'
 import { setCookie } from '@/utils/cookies'
 import { setLocal } from '@/utils/local'
+import to from 'await-to'
 export default {
   state: {
     token: '',
@@ -23,22 +24,13 @@ export default {
   },
   actions: {
     async [type.LOGIN]({ commit }, formData) {
-      try {
-        const result = await login(formData)
-        commit(type.SET_USER_INFO, result.data)
-        return result
-      } catch (error) {
-        console.log(error)
-        error.msg && Message.warning(error.msg)
-      }
+      const [res, err] = await to(login(formData))
+      if (err) return Message.warning(err.msg)
+      commit(type.SET_USER_INFO, res.data)
+      return res
     },
     async [type.LOGOUT]() {
-      try {
-        console.log('退出登录')
-      } catch (error) {
-        console.log(error)
-        error.msg && Message.warning(error.msg)
-      }
+      console.log('退出登录')
     },
   },
 }

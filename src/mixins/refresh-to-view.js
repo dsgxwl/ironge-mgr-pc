@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-26 16:49:58
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-26 16:55:33
+ * @LastEditTime: 2020-12-29 15:33:18
  */
 import { mapGetters, createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('tagsView')
@@ -13,12 +13,12 @@ export default {
     ...mapGetters(['visitedViews']),
   },
   methods: {
-    ...mapActions([type.DEL_CACHED_VIEW]),
+    ...mapActions([type.DEL_CACHED_VIEW, type.ADD_CACHED_VIEW]),
     async refreshToView(viewPath) {
       const view = this.visitedViews.find(item => item.path === viewPath)
       view && (await this[type.DEL_CACHED_VIEW](view))
-      this.$nextTick(() => {
-        this.$router.replace(viewPath)
+      this.$nextTick(async () => {
+        this.$router.replace('/redirect' + viewPath)
       })
     },
   },

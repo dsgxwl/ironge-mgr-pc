@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-17 22:18:46
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-26 16:37:23
+ * @LastEditTime: 2020-12-29 15:55:31
 -->
 <template>
   <div class="pageMain">
@@ -14,7 +14,6 @@
     </transition>
   </div>
 </template>
-
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapState } = createNamespacedHelpers('tagsView')

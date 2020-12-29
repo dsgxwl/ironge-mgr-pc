@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-21 19:52:13
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-28 11:15:15
+ * @LastEditTime: 2020-12-29 14:31:20
 -->
 <template>
   <div>
@@ -14,7 +14,6 @@
       @search="onSearch"
     ></table-search-bar>
     <div class="table-list">
-      <!-- @selection-change="handleSelectionChange" -->
       <el-table
         v-loading="loading"
         stripe
@@ -24,7 +23,6 @@
         style="width: 100%"
         v-bind="options"
       >
-        <!-- <el-table-column type="selection" align="center"></el-table-column> -->
         <el-table-column
           v-for="(col, index) in columns"
           :key="col.prop"

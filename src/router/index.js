@@ -23,6 +23,7 @@ const router = new VueRouter({
 NProgress.configure({
   showSpinner: false,
 })
+
 router.beforeEach((to, from, next) => {
   document.title = getTitle(to.meta.title)
   NProgress.start()

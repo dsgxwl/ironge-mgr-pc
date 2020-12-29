@@ -3,9 +3,14 @@
  * @Author: xiawenlong
  * @Date: 2020-12-28 16:37:02
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-28 16:48:37
+ * @LastEditTime: 2020-12-29 15:50:22
  */
 const to = function(promise) {
-  return promise.then(res => [res, null]).catch(err => [null, err])
+  return promise
+    .then(res => [res, null])
+    .catch(err => {
+      if (!err.msg) err.msg = err
+      return [null, err]
+    })
 }
 export default to

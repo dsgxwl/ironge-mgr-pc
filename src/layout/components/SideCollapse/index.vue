@@ -3,14 +3,13 @@
  * @Author: xiawenlong
  * @Date: 2020-12-17 22:19:20
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-21 11:43:47
+ * @LastEditTime: 2020-12-29 14:44:17
 -->
 <template>
   <div class="side-collapse">
     <i :class="{ 'el-icon-s-unfold': opened, 'el-icon-s-fold': !opened }" @click="toggleOpen()"></i>
   </div>
 </template>
-
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import * as type from '@/store/action-types'
@@ -26,10 +25,3 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.side-collapse i {
-  font-size: 18px;
-  color: #363f44;
-  cursor: pointer;
-}
-</style>

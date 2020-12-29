@@ -21,6 +21,12 @@ export default [
         meta: { title: '编辑学员' },
         hidden: true,
       },
+      {
+        path: 'add',
+        name: 'StudentAdd',
+        component: () => import(/*webpackChunkName:'StudentAdd'*/ '@/views/student/StudentAdd'),
+        meta: { title: '添加学员' },
+      },
     ],
   },
 ]
