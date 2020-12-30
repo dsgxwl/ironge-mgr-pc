@@ -1,4 +1,5 @@
 
+
 # 风格规范
 
 统一风格规范有利于多人项目的协作和维护，增加代码的可读性，避免小错误，但规范不是绝对的。
@@ -61,7 +62,7 @@ props: {
 调用http请求的两种方式
 ```js
 getData(){
-  getClassList().then(res => {
+  getClassList(params).then(res => {
     // 请求成功
   }, err => {
     // 请求失败
@@ -69,12 +70,13 @@ getData(){
 }
 ```
 ```js
+import to from 'await-to'
 async getData(){
-  try {
-    await getClassList()
-    // 请求成功
-  } catch (error) {
+  const [res, err] = await to(getClassList(params))
+  if (err) {
     // 请求失败
+  } else {
+    // 请求成功
   }
 }
 ```
