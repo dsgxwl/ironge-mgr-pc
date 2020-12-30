@@ -14,7 +14,7 @@ export default {
     [type.SET_USER_INFO](state, payload) {
       state.userInfo = payload
       state.token = payload.token
-      setLocal('userInfo', payload)
+      setCookie('userInfo', payload)
       setCookie('myToken', payload.token)
     },
     [type.SET_COLLEGE](state, payload) {

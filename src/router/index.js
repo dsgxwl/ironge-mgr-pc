@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
   } else {
     // 重拿用户信息
     if (JSON.stringify(store.state.user.userInfo) == '{}') {
-      const userInfo = getLocal('userInfo', true)
+      const userInfo = getCookie('userInfo')
       JSON.stringify(userInfo) !== '{}' && store.commit(`user/${type.SET_USER_INFO}`, userInfo)
     }
     // 重拿用户当前选择学院
