@@ -3,7 +3,7 @@
  * @Author: xiawenlong
  * @Date: 2020-12-16 19:57:59
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-25 14:19:22
+ * @LastEditTime: 2020-12-29 22:17:26
  */
 import axios from 'axios'
 import codeMsg from './code-msg'
@@ -71,7 +71,7 @@ class Http {
   get(url, config = {}) {
     return this.request({
       method: 'get',
-      url: url,
+      url,
       ...config,
     })
   }

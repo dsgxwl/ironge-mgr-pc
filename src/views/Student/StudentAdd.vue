@@ -3,12 +3,12 @@
  * @Author: xiawenlong
  * @Date: 2020-12-29 16:30:21
  * @LastEditors: xiawenlong
- * @LastEditTime: 2020-12-29 17:50:23
+ * @LastEditTime: 2020-12-30 08:54:37
 -->
 <template>
   <form-wrapper class="student-add">
     <el-table :data="students" border>
-      <el-table-column type="index" width="50"> </el-table-column>
+      <el-table-column type="index" width="50" label="序号"></el-table-column>
       <el-table-column prop="studentName" label="学员姓名">
         <template slot-scope="scope">
           <el-input v-model="scope.row.studentName"></el-input>
@@ -92,6 +92,11 @@ export default {
           classes: [],
         },
       ],
+      studentsRules: {
+        studentName: [{ required: true, message: '学生姓名' }],
+        mobile: [{ required: true, validator: isMobile, message: '手机号' }],
+        cardNo: [{ required: true, validator: isIDcard, message: '身份证号' }],
+      },
       deptList: [],
       classList: [],
     }
@@ -119,31 +124,18 @@ export default {
       this.classList = res.data
     },
     async submitAddStudent() {
-      let msg
       for (let i = 0; i < this.students.length; i++) {
         let student = this.students[i]
-        if (!student.studentName) {
-          msg = `序号${i + 1}行学生姓名不能为空`
-          break
-        }
-        if (!student.mobile) {
-          msg = `序号${i + 1}行手机号不能为空`
-          break
-        }
-        if (!isMobile(student.mobile)) {
-          msg = `序号${i + 1}行请输入正确的手机号`
-          break
-        }
-        if (!student.cardNo) {
-          msg = `序号${i + 1}行身份证号不能为空`
-          break
-        }
-        if (!isIDcard(student.cardNo)) {
-          msg = `序号${i + 1}行请输入正确的身份证号`
-          break
+        for (const key in this.studentsRules) {
+          const { required, message, validator } = this.studentsRules[key][0]
+          if (required && !student[key]) {
+            return this.$message.warning(`序号${i + 1}行${message}不能为空`)
+          }
+          if (validator && !validator(student[key])) {
+            return this.$message.warning(`序号${i + 1}行请填写正确的${message}`)
+          }
         }
       }
-      if (msg) return this.$message.warning(msg)
       const { organizationId, tenantId, students } = this
       const [, err] = await to(studentCreate({ students, organizationId, tenantId }))
       if (err) return this.$message.warning(err.msg)
